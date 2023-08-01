@@ -1,98 +1,110 @@
-PROGRAMMING EXERCISE
+# Kubernetes Pod Status Checker
 
-Description:
+This repository contains a Python program designed to monitor the status of pods within a Kubernetes cluster. The program is containerized using Docker, making it easy to deploy and execute within a Kubernetes environment. Additionally, we provide Helm charts to facilitate the deployment of the containerized program and a set of test cases to validate its functionality.
 
-This code package is a technical implementation comprising a code repository aimed at constructing a containerized Python program. The primary purpose of this program is to operate within a Kubernetes cluster and monitor the status of various pods. To determine the target status, the program accepts a parameter passed through an environment variable named POD_STATUS. The possible values for this parameter include: "Terminating," "Error," "Completed," "Running," or "CreateContainerConfigError."
+## Description
 
-Upon execution, the program generates a tabular representation (listing) of all pods that currently exist in the specified status, as identified by the POD_STATUS parameter.
+The primary objective of this code package is to monitor the status of pods within a Kubernetes cluster. The status to be monitored is determined by the value of the environment variable `POD_STATUS`, which can take one of the following values: "Terminating," "Error," "Completed," "Running," or "CreateContainerConfigError."
 
-The code package consist of three folder: Docker, PodStatusChecker-Chart and Test-Cases.
+Upon execution, the program generates a tabular representation (listing) of all pods that currently exist in the specified status, as identified by the `POD_STATUS` parameter.
 
+## Project Structure
 
-Project Requirement:
+The repository is organized into three main folders:
 
-Step 1 – Program Development
+1. **Docker**: This folder contains the necessary components for containerizing the Python program. It includes the Dockerfile responsible for defining the build process and assembling the Docker image. The `requirements.txt` file lists all the required Python dependencies to ensure a proper execution environment. Finally, the folder contains the core logic of the application in the form of a Python script.
 
-The program was buiild and debugged in visual studio code. The python program was first test outside the kubenertes cluster running in minikube. 
- 
+2. **PodStatusChecker-Chart**: This folder contains a Helm chart designed to streamline the deployment process of the Python program within a Kubernetes cluster. The chart includes various manifest files, such as service account, cluster role, cluster role binding, and deployment specifications.
 
-Step 2 - Containerize
+3. **Test-Cases**: This folder contains manifest files simulating the deployment of pods in different statuses within the Kubernetes cluster. These test cases help verify the program's ability to correctly identify and list pods with specific statuses.
 
-After the core functionality of the script was developed and validated, the next step involved containerizing it using a Dockerfile to produce a deployable image. This image was subsequently published to DockerHub for wider distribution and accessibility.
+## Project Requirements
 
-The Docker folder houses the necessary components for containerization. It contains the Dockerfile responsible for defining the build process and assembling the image. Additionally, the folder includes a requirements.txt file listing all the required Python dependencies, ensuring the proper environment for the script's execution. Finally, the folder contains the actual Python script, which constitutes the core logic of the application.
+### Step 1 – Program Development
 
-Run the following commands to build, tag and push the python program image:
-    Builds the Image
-    - docker build -t pod-status-checker ./Docker
+The Python program was developed and debugged using Visual Studio Code. It was initially tested outside the Kubernetes cluster using Minikube to ensure its core functionality.
 
-    Tags the Image
-    - docker tag pod-status-checker <RepoName>/pod-status-checker:latest
+### Step 2 - Containerize
 
-    Push to DockerHub
-    - docker push <RepoName>/pod-status-checker:latest
+Once the core functionality of the Python script was validated, it was containerized using a Dockerfile to create a deployable Docker image. The Docker image was then published to DockerHub for wider distribution and accessibility.
 
+To build, tag, and push the Python program image, use the following commands:
 
-Step 3  – Deploy your Container
+```bash
+# Builds the Image
+docker build -t pod-status-checker ./Docker
 
-The PodStatusChecker-Chark is a Helm chart designed to facilitate the deployment of essential manifest files responsible for running a Python container within a Kubernetes cluster. These manifest files encompass various components such as the service account, cluster role, cluster role binding, and deployment specifications.
+# Tags the Image
+docker tag pod-status-checker <RepoName>/pod-status-checker:latest
 
-The service account, cluster role, and cluster role binding play a pivotal role in granting necessary permissions to the program container, thereby enabling it to access and retrieve the status information of pods residing within the cluster. This setup ensures that the program operates with the required privileges to effectively obtain and list the status of pods, ensuring smooth and secure execution within the Kubernetes environment.
+# Push to DockerHub
+docker push <RepoName>/pod-status-checker:latest
+```
 
-Run the following commands to deploy the python container in kubernetes cluster using helm charts:
-    Validate the helm chart 
-    - helm lint . 
+### Step 3 – Deploy your Container
 
-    Ensure the values are getting substituted in the template
-    - helm template . 
+The Helm chart, `PodStatusChecker-Chart`, assists in deploying the essential manifest files required to run the Python container within a Kubernetes cluster. These manifest files include the service account, cluster role, cluster role binding, and deployment specifications.
 
-    check if there are any issues with the chart
-    - helm install --dry-run pod-status-checker ./PodStatusChecker-Chart
+The service account, cluster role, and cluster role binding grant the necessary permissions to the program container, enabling it to access and retrieve the status information of pods within the cluster. This setup ensures that the program operates with the required privileges to effectively obtain and list the status of pods, ensuring smooth and secure execution within the Kubernetes environment.
 
-    Deploy the manifest files to the cluster:
-    - helm install pod-status-checker ./PodStatusChecker-Chart -f ./PodStatusChecker-Chart/values.yaml 
+To deploy the Python container in the Kubernetes cluster using the Helm chart, use the following commands:
 
-Step 4 - Testing
+```bash
+# Validate the helm chart
+helm lint .
 
-The Test-Cases folder consist of manifest files that simulate the deployment of pods in the kubernetes cluster with: Terminating, Error, Completed, Running, or CreateContainerConfigError statuses. 
+# Ensure the values are getting substituted in the template
+helm template .
 
-Run the following commands to deploy the pods to simulate the Terminating, Error, Completed, Running, or CreateContainerConfigError pod statuses:
-    
-    kubectl apply -f completed.yaml
-    kubectl apply -f CreateContainerConfigError.yaml
-    kubectl apply -f error.yaml
-    kubectl apply -f running.yaml
-    kubectl apply -f terminating.yaml
+# Check if there are any issues with the chart
+helm install --dry-run pod-status-checker ./PodStatusChecker-Chart
 
-Run the follwoing commands to test the designated pod status state:
+# Deploy the manifest files to the cluster
+helm install pod-status-checker ./PodStatusChecker-Chart -f ./PodStatusChecker-Chart/values.yaml
+```
 
-    TEST-CASE 1: Terminating
-        Update the PodStatus to "Terminating" in the values.yaml and save the changes
-        - helm upgrade pod-status-checker PodStatusChecker-Chart -f ./PodStatusChecker-Chart/values.yaml 
-        - kubectl delete pods terminating-pod
-        - kubectl logs -f pod-status-checker
-          NOTE: This command should output a listing of the pods in the Terminating state
+### Step 4 - Testing
 
-    TEST-CASE 2: Error
-        Update the PodStauts to "Error" in the values.yaml and save the changes
-        - helm upgrade pod-status-checker PodStatusChecker-Chart -f ./PodStatusChecker-Chart/values.yaml
-        - kubectl logs -f pod-status-checker
-          NOTE: This command should output a listing of the pods in the Error state
+The `Test-Cases` folder contains manifest files that simulate the deployment of pods with various statuses within the Kubernetes cluster. These test cases ensure the correct functionality of the Python program in different scenarios.
 
-    TEST-CASE 3: Completed
-        Update the PodStauts to "Completed" in the values.yaml and save the changes
-        - helm upgrade pod-status-checker PodStatusChecker-Chart -f ./PodStatusChecker-Chart/values.yaml
-        - kubectl logs -f pod-status-checker
-          NOTE: This command should output a listing of the pods in the Completed state
+To deploy the pods and test the designated pod status states, use the following commands:
 
-    TEST-CASE 4: Running
-        Update the PodStauts to "Running" in the values.yaml and save the changes
-        - helm upgrade pod-status-checker PodStatusChecker-Chart -f ./PodStatusChecker-Chart/values.yaml
-        - kubectl logs -f pod-status-checker
-          NOTE: This command should output a listing of the pods in the Running state
+```bash
+# Deploy the pods to simulate different pod statuses
+kubectl apply -f Test-Cases/completed.yaml
+kubectl apply -f Test-Cases/CreateContainerConfigError.yaml
+kubectl apply -f Test-Cases/error.yaml
+kubectl apply -f Test-Cases/running.yaml
+kubectl apply -f Test-Cases/terminating.yaml
 
-    TEST-CASE 5: CreateContainerConfigError
-        Update the PodStauts to "CreateContainerConfigError" in the values.yaml and save the changes
-        - helm upgrade pod-status-checker PodStatusChecker-Chart -f ./PodStatusChecker-Chart/values.yaml
-        - kubectl logs -f pod-status-checker
-          NOTE: This command should output a listing of the pods in the CreateContainerConfigError state
+# Test Case 1: Terminating
+# Update the PodStatus to "Terminating" in the values.yaml and save the changes
+helm upgrade pod-status-checker PodStatusChecker-Chart -f ./PodStatusChecker-Chart/values.yaml
+kubectl delete pods terminating-pod
+kubectl logs -f pod-status-checker
+# NOTE: This command should output a listing of the pods in the Terminating state
+
+# Test Case 2: Error
+# Update the PodStatus to "Error" in the values.yaml and save the changes
+helm upgrade pod-status-checker PodStatusChecker-Chart -f ./PodStatusChecker-Chart/values.yaml
+kubectl logs -f pod-status-checker
+# NOTE: This command should output a listing of the pods in the Error state
+
+# Test Case 3: Completed
+# Update the PodStatus to "Completed" in the values.yaml and save the changes
+helm upgrade pod-status-checker PodStatusChecker-Chart -f ./PodStatusChecker-Chart/values.yaml
+kubectl logs -f pod-status-checker
+# NOTE: This command should output a listing of the pods in the Completed state
+
+# Test Case 4: Running
+# Update the PodStatus to "Running" in the values.yaml and save the changes
+helm upgrade pod-status-checker PodStatusChecker-Chart -f ./PodStatusChecker-Chart/values.yaml
+kubectl logs -f pod-status-checker
+# NOTE: This command should output a listing of the pods in the Running state
+
+# Test Case 5: CreateContainerConfigError
+# Update the PodStatus to "CreateContainerConfigError" in the values.yaml and save the changes
+helm upgrade pod-status-checker PodStatusChecker-Chart -f ./PodStatusChecker-Chart/values.yaml
+kubectl logs -f pod-status-checker
+# NOTE: This command should output a listing of the pods in the CreateContainerConfigError state
+```
