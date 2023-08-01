@@ -7,4 +7,5 @@ image:
   tag: latest
 
 PodStatus:
+  # The PodStatus can be one of: Terminating, Error, Completed, Running or CreateContainerConfigError
   Status: Terminating 
