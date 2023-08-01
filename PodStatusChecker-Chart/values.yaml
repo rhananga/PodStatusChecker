@@ -1,0 +1,10 @@
+replicaCount: 1
+
+AppName: pod-status-checker
+
+image:
+  repository: <reponame>/kubernetes-service
+  tag: latest
+
+PodStatus:
+  Status: Terminating 

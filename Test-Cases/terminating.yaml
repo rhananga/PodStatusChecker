@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: terminating-pod
+spec:
+  restartPolicy: Never
+  containers:
+    - name: busybox-container
+      image: busybox
+      command: ["/bin/sh", "-c", "echo 'Pod will never complete'; sleep infinity"]

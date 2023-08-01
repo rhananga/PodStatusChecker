@@ -1,0 +1,25 @@
+# kubernetes-deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.AppName }}
+spec:
+  replicas: {{.Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{.Values.AppName}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.AppName}}
+    spec:
+      serviceAccountName: kubernetes-service-account # Specify the ServiceAccount here
+      containers:
+        - name: {{.Values.AppName }}
+          image: {{.Values.image.repository}}:{{.Values.image.tag }}
+          imagePullPolicy: Always
+          env:
+            - name: POD_STATUS
+              value: {{.Values.PodStatus.Status }} 
+          

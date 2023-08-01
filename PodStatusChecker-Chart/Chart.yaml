@@ -1,0 +1,9 @@
+apiVersion: v2
+name: K8s-PodStatusChecker
+description: This chart deploys the mainifest files for a kubernetes pod that checks the status of the pods running in the cluster
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+maintainers:
+- email: contact@devopscube.com
+  name: devopscube

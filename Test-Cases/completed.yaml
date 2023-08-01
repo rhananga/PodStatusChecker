@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: completed-pod
+spec:
+  restartPolicy: Never
+  containers:
+    - name: busybox-container
+      image: busybox
+      command: ["sleep", "5"] # Simulate a process that takes some time to complete

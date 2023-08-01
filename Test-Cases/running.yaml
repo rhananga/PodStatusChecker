@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: running-pod
+spec:
+  restartPolicy: Never
+  containers:
+    - name: busybox-container
+      image: busybox
+      command: ["/bin/sh", "-c", "while true; do echo 'Pod is running...'; sleep 5; done"]
