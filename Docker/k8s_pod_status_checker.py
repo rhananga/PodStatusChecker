@@ -1,11 +1,12 @@
-# kubernetes_service.py
+# k8_pod_status_checker.py
+
 import os
 import sys
 import time
 from kubernetes import client, config
 
 def get_pods_by_status(status):
-    config.load_incluster_config()  # Assuming running in a Kubernetes cluster
+    config.load_incluster_config()  # running in a Kubernetes cluster
 
     v1 = client.CoreV1Api()
     pods = v1.list_pod_for_all_namespaces(watch=False)
@@ -47,7 +48,6 @@ def print_pods_table(pods):
         print(f"{'POD NAME':40}{'STATE':15}")
         print("="*60)
         for pod in pods:
-            #print(f"{pod['Namespace']}\t{pod['Name']}\t{pod['Status']}")
             print(f"{pod['Name']:40}{pod['Status']:15}")
         sys.stdout.flush()
     else:
@@ -59,4 +59,4 @@ if __name__ == "__main__":
         pod_status = os.environ.get("POD_STATUS", "Running")
         pods = get_pods_by_status(pod_status)
         print_pods_table(pods)
-        time.sleep(2)  # Query every 2 seconds, adjust as needed
+        time.sleep(2)  # Query every 2 second
