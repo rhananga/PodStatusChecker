@@ -3,7 +3,7 @@ replicaCount: 1
 AppName: pod-status-checker
 
 image:
-  repository: <reponame>/kubernetes-service
+  repository: rhananga/pod-status-checker
   tag: latest
 
 PodStatus:

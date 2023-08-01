@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ContainerConfigError-pod
+  name: containerconfigerror-pod
   labels:
     app: mysql
 spec:
