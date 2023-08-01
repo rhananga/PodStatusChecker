@@ -16,7 +16,6 @@ def get_pods_by_status(status):
         if pod.status.phase == status:
             pods_in_status.append(
                 {
-                    #"Namespace": pod.metadata.namespace,
                     "Name": pod.metadata.name,
                     "Status": pod.status.phase,
                 }
@@ -26,7 +25,6 @@ def get_pods_by_status(status):
                 if container_status.state.terminated and container_status.state.terminated.reason == status:
                     pods_in_status.append(
                         {
-                            #"Namespace": pod.metadata.namespace,
                             "Name": pod.metadata.name,
                             "Status": status,
                         }
@@ -34,12 +32,10 @@ def get_pods_by_status(status):
                 elif container_status.state.waiting and container_status.state.waiting.reason == status:
                     pods_in_status.append(
                         {
-                            #"Namespace": pod.metadata.namespace,
                             "Name": pod.metadata.name,
                             "Status": status,
                         }
                     )
-
     return pods_in_status
 
 def print_pods_table(pods):
