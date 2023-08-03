@@ -3,7 +3,7 @@ replicaCount: 1
 AppName: pod-status-checker
 
 image:
-  repository: rhananga/pod-status-checker
+  repository: <RepoName>/pod-status-checker
   tag: latest
 
 PodStatus:
